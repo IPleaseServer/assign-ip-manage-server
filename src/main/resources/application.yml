@@ -1,0 +1,6 @@
+spring:
+  application.name: assign-ip-manage-server
+  profiles:
+    active: ${SPRING_PROFILE}
+server.shutdown: graceful
+logging.config: classpath:logback/logback-${spring.profiles.active}.xml
