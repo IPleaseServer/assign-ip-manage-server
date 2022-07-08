@@ -8,5 +8,5 @@ import site.iplease.aimserver.global.demand.data.message.IpAssignDemandAcceptedM
 interface AssignIpConverter {
     fun toDto(message: IpAssignDemandAcceptedMessage): Mono<AssignIpDto>
     fun toEntity(dto: AssignIpDto): Mono<AssignIp>
-    fun toDto(message: AssignIp): Mono<AssignIpDto>
+    fun toDto(entity: AssignIp): Mono<AssignIpDto>
 }
