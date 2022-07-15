@@ -15,9 +15,10 @@ class DummySubnetRepository: SubnetRepository {
                 "10.120.74",
                 "10.120.75"
             ).contains(subnet) }
+            .onErrorReturn(false)
 
     private fun extractSubnet(ip: String): Mono<String> =
         ip.split(".").toMono()
             .map { "${it[0]}.${it[1]}.${it[2]}" }
-            .onErrorContinue { throwable, _ -> Mono.error<Unit>(RuntimeException("ip를 통해 subnet을 추출하던 중, 오류가 발생하였습니다.", throwable)) }
+            .onErrorResume { throwable -> Mono.error(RuntimeException("ip를 통해 subnet을 추출하던 중, 오류가 발생하였습니다.", throwable)) }
 }
