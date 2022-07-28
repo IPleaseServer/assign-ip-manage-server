@@ -43,7 +43,7 @@ class IpAssignDemandAcceptedSubscriberV1(
             """.trimIndent(), AlarmType.EMAIL) }
             //오류 발생시, 메세지를 발행한다.
             .onErrorResume(AssignIpCreateFailureException::class.java) { throwable ->
-                val errorMessage = IpAssignDemandAcceptedErrorOnManageMessage(
+                val errorMessage = IpAssignDemandAcceptedErrorOnManageMessage( //TODO 나중에 Converter 인터페이스 만들고 위임할 것
                     message.demandId,
                     message.originStatus,
                     message.issuerId,
