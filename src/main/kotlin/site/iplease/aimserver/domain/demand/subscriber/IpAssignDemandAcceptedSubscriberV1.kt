@@ -1,6 +1,8 @@
 package site.iplease.aimserver.domain.demand.subscriber
 
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import site.iplease.aimserver.domain.demand.exception.AssignIpCreateFailureException
 import site.iplease.aimserver.domain.demand.service.AssignIpService
 import site.iplease.aimserver.domain.demand.util.AssignIpConverter
 import site.iplease.aimserver.global.demand.data.message.IpAssignDemandAcceptedErrorOnManageMessage
@@ -23,6 +25,7 @@ class IpAssignDemandAcceptedSubscriberV1(
         assignIpConverter.toDto(message)
             //AssignIpDto로 할당IP를 추가한다.
             .flatMap { dto -> assignIpService.addAssignIp(dto) }
+            .onErrorResume{ Mono.error(AssignIpCreateFailureException(it.localizedMessage)) } //비즈니스 로직 내 오류 발생에 대한 중단점
             //푸시알림서비스로 관리자에게 신청수락 성공함 FCM알림을 보낸다.
             .flatMap { dto -> pushAlarmService.publish(dto.assignerId, "신청 수락에 성공했어요", "${dto.ip}를 할당해서 신청을 수락하셧어요").map { dto } }
             //푸시알림서비스로 신청자에게 신청 수락됨 FCM알림을 보낸다.
@@ -38,7 +41,8 @@ class IpAssignDemandAcceptedSubscriberV1(
                 혹 기존에 다른 IP를 할당받으셧다면, 해당 IP 또한 당연히 같이 사용하실 수 있어요.
                 해당 IP는 ${message.expireAt}에 만료될 예정이에요. 혹, 이전에 IP사용이 종료된다면, IP할당 해제신청을 부탁드릴게요!
             """.trimIndent(), AlarmType.EMAIL) }
-            .onErrorResume { throwable ->
+            //오류 발생시, 메세지를 발행한다.
+            .onErrorResume(AssignIpCreateFailureException::class.java) { throwable ->
                 val errorMessage = IpAssignDemandAcceptedErrorOnManageMessage(message.demandId, throwable.localizedMessage)
                 messagePublishService.publish(MessageType.IP_ASSIGN_DEMAND_ACCEPTED_ERROR_ON_MANAGE, errorMessage)
             }.block()
