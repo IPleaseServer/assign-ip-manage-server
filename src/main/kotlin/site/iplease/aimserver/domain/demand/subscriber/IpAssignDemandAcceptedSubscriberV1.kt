@@ -5,6 +5,7 @@ import reactor.core.publisher.Mono
 import site.iplease.aimserver.domain.demand.exception.AssignIpCreateFailureException
 import site.iplease.aimserver.domain.demand.service.AssignIpService
 import site.iplease.aimserver.domain.demand.util.AssignIpConverter
+import site.iplease.aimserver.global.demand.data.message.AssignIpCreateMessage
 import site.iplease.aimserver.global.demand.data.message.IpAssignDemandAcceptedErrorOnManageMessage
 import site.iplease.aimserver.global.demand.data.message.IpAssignDemandAcceptedMessage
 import site.iplease.aimserver.global.demand.subscriber.IpAssignDemandAcceptedSubscriber
@@ -40,7 +41,9 @@ class IpAssignDemandAcceptedSubscriberV1(
                 
                 혹 기존에 다른 IP를 할당받으셧다면, 해당 IP 또한 당연히 같이 사용하실 수 있어요.
                 해당 IP는 ${message.expireAt}에 만료될 예정이에요. 혹, 이전에 IP사용이 종료된다면, IP할당 해제신청을 부탁드릴게요!
-            """.trimIndent(), AlarmType.EMAIL) }
+            """.trimIndent(), AlarmType.EMAIL).map { dto } }
+            //추가된 IP의 만료기한을 설정하기위한 메세지를 발행한다.
+            .flatMap { messagePublishService.publish(MessageType.ASSIGN_IP_CREATE, AssignIpCreateMessage(it.id, message.expireAt)) }
             //오류 발생시, 메세지를 발행한다.
             .onErrorResume(AssignIpCreateFailureException::class.java) { throwable ->
                 val errorMessage = IpAssignDemandAcceptedErrorOnManageMessage( //TODO 나중에 Converter 인터페이스 만들고 위임할 것
