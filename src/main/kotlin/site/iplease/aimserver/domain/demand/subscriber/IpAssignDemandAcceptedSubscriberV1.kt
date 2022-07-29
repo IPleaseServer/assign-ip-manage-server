@@ -55,6 +55,7 @@ class IpAssignDemandAcceptedSubscriberV1(
                     message.description,
                     message.usage,
                     message.expireAt,
+                    message.assignIp,
                     throwable.localizedMessage)
                 messagePublishService.publish(MessageType.IP_ASSIGN_DEMAND_ACCEPTED_ERROR_ON_MANAGE, errorMessage)
             }.block()
