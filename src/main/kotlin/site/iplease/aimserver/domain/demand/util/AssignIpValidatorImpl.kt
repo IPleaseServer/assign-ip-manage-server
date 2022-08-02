@@ -19,6 +19,7 @@ class AssignIpValidatorImpl(
     override fun validate(type: PolicyType, dto: AssignIpDto): Mono<Unit> =
         when(type) {
             PolicyType.ADD -> isIpExists(dto.ip, false).flatMap { isSubnetExistsByIp(dto.ip) }
+            PolicyType.REMOVE -> isIpExists(dto.ip)
         }
 
     private fun isSubnetExistsByIp(ip: String, isNeedExists: Boolean = true): Mono<Unit> =
