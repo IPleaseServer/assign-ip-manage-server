@@ -25,6 +25,14 @@ class AssignIpConverterImpl: AssignIpConverter {
             assigneeId = entity.assigneeId
         ) }
 
+    override fun toDto(id: Long): Mono<AssignIpDto> =
+        Unit.toMono().map { AssignIpDto(
+            id = id,
+            ip = "",
+            assignerId = -1,
+            assigneeId = -1
+        ) }
+
     override fun toEntity(dto: AssignIpDto): Mono<AssignIp> =
         Unit.toMono().map { AssignIp(
             id = dto.id,
