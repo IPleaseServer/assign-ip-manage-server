@@ -5,9 +5,7 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 import site.iplease.aimserver.domain.demand.data.dto.AssignIpDto
 import site.iplease.aimserver.domain.demand.data.type.PolicyType
-import site.iplease.aimserver.domain.demand.exception.AlreadyAssignedIpAddressException
-import site.iplease.aimserver.domain.demand.exception.NotAssignedIpAddressException
-import site.iplease.aimserver.domain.demand.exception.WrongSubnetAddressException
+import site.iplease.aimserver.domain.demand.exception.*
 import site.iplease.aimserver.domain.demand.repository.AssignIpRepository
 import site.iplease.aimserver.domain.demand.repository.SubnetRepository
 
@@ -19,7 +17,7 @@ class AssignIpValidatorImpl(
     override fun validate(type: PolicyType, dto: AssignIpDto): Mono<Unit> =
         when(type) {
             PolicyType.ADD -> isIpExists(dto.ip, false).flatMap { isSubnetExistsByIp(dto.ip) }
-            PolicyType.REMOVE -> isIpExists(dto.ip)
+            PolicyType.REMOVE -> isExists(dto.id)
         }
 
     private fun isSubnetExistsByIp(ip: String, isNeedExists: Boolean = true): Mono<Unit> =
@@ -36,5 +34,13 @@ class AssignIpValidatorImpl(
                 if(isExists == isNeedExists) Unit.toMono()
                 else if(isNeedExists) Mono.error(NotAssignedIpAddressException("${ip}는 할당되지 않은Ip주소입니다."))
                 else Mono.error(AlreadyAssignedIpAddressException("${ip}는 이미 할당되었습니다!"))
+            }
+
+    private fun isExists(id: Long, isNeedExists: Boolean = true): Mono<Unit> =
+        assignIpRepository.existsById(id)
+            .flatMap { isExists ->
+                if(isExists == isNeedExists) Unit.toMono()
+                else if(isNeedExists) Mono.error(UnknownAssignIpException("해당ID를 가지는 할당IP를 찾을 수 없습니다! - ${id}"))
+                else Mono.error(AlreadyExistsAssignedIpException("이미 해당ID를 가지는 할당IP가 존재합니다! - ${id}"))
             }
 }
