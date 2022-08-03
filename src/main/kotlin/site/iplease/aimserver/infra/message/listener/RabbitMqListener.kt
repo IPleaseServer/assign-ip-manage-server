@@ -7,8 +7,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
-import site.iplease.aimserver.global.demand.data.message.IpAssignDemandAcceptedMessage
-import site.iplease.aimserver.global.demand.subscriber.IpAssignDemandAcceptedSubscriber
+import site.iplease.aimserver.global.accept.data.message.IpAssignDemandAcceptedMessage
+import site.iplease.aimserver.global.accept.subscriber.IpAssignDemandAcceptedSubscriber
 import site.iplease.aimserver.infra.message.type.MessageType
 
 @Component
