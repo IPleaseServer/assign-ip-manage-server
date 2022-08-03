@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 import site.iplease.aimserver.domain.demand.data.response.RemoveAssignIpResponse
 import site.iplease.aimserver.domain.demand.service.AssignIpService
 
-@RequestMapping("/api/v1/assign-ip")
+@RequestMapping("/api/v1/assign-ip/command")
 @RestController
 class AssignIpManageController(
     val assignIpService: AssignIpService
