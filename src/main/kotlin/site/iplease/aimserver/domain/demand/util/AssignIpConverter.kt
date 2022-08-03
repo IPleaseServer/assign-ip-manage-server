@@ -9,4 +9,5 @@ interface AssignIpConverter {
     fun toDto(message: IpAssignDemandAcceptedMessage): Mono<AssignIpDto>
     fun toEntity(dto: AssignIpDto): Mono<AssignIp>
     fun toDto(entity: AssignIp): Mono<AssignIpDto>
+    fun toDto(id: Long): Mono<AssignIpDto>
 }
