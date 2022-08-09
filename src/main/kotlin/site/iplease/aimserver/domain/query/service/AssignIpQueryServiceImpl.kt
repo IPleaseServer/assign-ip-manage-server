@@ -19,6 +19,7 @@ class AssignIpQueryServiceImpl(
     override fun getAllAssignIp(page: PageRequest): Mono<Page<AssignIpDto>> = assignIpRepository.findBy(page).convert()
     override fun getAllAssignIpByAssigneeId(page: PageRequest, assigneeId: Long): Mono<Page<AssignIpDto>> = assignIpRepository.findByAssigneeId(page, assigneeId).convert()
     override fun getAssignIpById(assignIpId: Long): Mono<AssignIpDto> = assignIpRepository.findById(assignIpId).flatMap { assignIpConverter.toDto(it) }
+    override fun existsAssignIpById(assignIpId: Long): Mono<Boolean> = assignIpRepository.existsById(assignIpId)
 
     private fun Flux<AssignIp>.convert(): Mono<Page<AssignIpDto>> =
         flatMap { assignIpConverter.toDto(it) }
