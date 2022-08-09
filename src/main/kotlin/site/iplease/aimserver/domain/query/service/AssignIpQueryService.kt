@@ -9,4 +9,5 @@ interface AssignIpQueryService {
     fun getAllAssignIp(page: PageRequest): Mono<Page<AssignIpDto>>
     fun getAllAssignIpByAssigneeId(page: PageRequest, assigneeId: Long): Mono<Page<AssignIpDto>>
     fun getAssignIpById(assignIpId: Long): Mono<AssignIpDto>
+    fun existsAssignIpById(assignIpId: Long): Mono<Boolean>
 }
