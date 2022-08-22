@@ -36,10 +36,12 @@ class IpAssignDemandAcceptedSubscriberV1(
                 pushAlarmService.publish(dto.assignerId, "새로운 IP를 할당받았어요!", """
                 축하해요! 새로운 IP를 할당받았어요!
                 
-                수락된 신청 제목: ${message.title}
-                할당받은 IP: ${message.assignIp}
+                > 수락된 신청 제목: ${message.title}
+                > 
+                > 할당받은 IP: ${message.assignIp}
                 
                 혹 기존에 다른 IP를 할당받으셧다면, 해당 IP 또한 당연히 같이 사용하실 수 있어요.
+                
                 해당 IP는 ${message.expireAt}에 만료될 예정이에요. 혹, 이전에 IP사용이 종료된다면, IP할당 해제신청을 부탁드릴게요!
             """.trimIndent(), AlarmType.EMAIL).map { dto } }
             //추가된 IP의 만료기한을 설정하기위한 메세지를 발행한다.
