@@ -30,10 +30,10 @@ class IpAssignDemandAcceptedSubscriberV1(
             //푸시알림서비스로 관리자에게 신청수락 성공함 FCM알림을 보낸다.
             .flatMap { dto -> pushAlarmService.publish(dto.assignerId, "신청 수락에 성공했어요", "${dto.ip}를 할당해서 신청을 수락하셧어요").map { dto } }
             //푸시알림서비스로 신청자에게 신청 수락됨 FCM알림을 보낸다.
-            .flatMap { dto -> pushAlarmService.publish(dto.assignerId, "신청이 수락됬어요", "${dto.ip}를 할당받았어요! 자세한 내용은 메일을 확인해주세요").map { dto } }
+            .flatMap { dto -> pushAlarmService.publish(dto.assigneeId, "신청이 수락됬어요", "${dto.ip}를 할당받았어요! 자세한 내용은 메일을 확인해주세요").map { dto } }
             //푸시알림서비스로 신청자에게 할당IP 부여됨 MAIL알림을 보낸다.
             .flatMap { dto ->
-                pushAlarmService.publish(dto.assignerId, "새로운 IP를 할당받았어요!", """
+                pushAlarmService.publish(dto.assigneeId, "새로운 IP를 할당받았어요!", """
                 축하해요! 새로운 IP를 할당받았어요!
                 
                 > 수락된 신청 제목: ${message.title}
