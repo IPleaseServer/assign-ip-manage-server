@@ -13,8 +13,8 @@ import site.iplease.aimserver.global.common.util.AssignIpConverter
 
 @Service
 class AssignIpQueryServiceImpl(
-    val assignIpRepository: AssignIpRepository,
-    val assignIpConverter: AssignIpConverter
+    private val assignIpRepository: AssignIpRepository,
+    private val assignIpConverter: AssignIpConverter
 ): AssignIpQueryService {
     override fun getAllAssignIp(page: PageRequest): Mono<Page<AssignIpDto>> = assignIpRepository.findBy(page).convert()
     override fun getAllAssignIpByAssigneeId(page: PageRequest, assigneeId: Long): Mono<Page<AssignIpDto>> = assignIpRepository.findByAssigneeId(page, assigneeId).convert()
